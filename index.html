@@ -12,7 +12,7 @@
   
   <body>
     <a-assets>
-      <a-asset-item id="myModel" src="./astronaut_3d.glb"></a-asset-item>
+      <a-asset-item id="myModel" src="./astronauts.glb"></a-asset-item>
     </a-assets>
 
     <a-scene 
@@ -36,9 +36,9 @@
         <a-gltf-model 
             src="#myModel" 
             position="0 -1 0" 
-            scale="0.5 0.5 0.5"
+            scale="0.005 0.005 0.005"
             rotation="0 0 0"
-            animation-mixer="clip: floating">
+            animation-mixer="clip: *">
         </a-gltf-model>
 
       </a-entity>
