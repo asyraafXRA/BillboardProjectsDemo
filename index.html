@@ -73,6 +73,58 @@
 
     </a-entity>
   </a-scene>
+  <script>
+    // Wait for the document and A-Frame scene to be ready
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Get all your elements
+      const product = document.querySelector('#productModel');
+      const voucher = document.querySelector('#voucher');
+      const redeemBtn = document.querySelector('#redeemBtn');
+
+      // === OPTION 1 LOGIC (Product Explorer) ===
+
+      document.querySelector('#btnRed').addEventListener('click', () => {
+        product.setAttribute('src', '#modelRed');
+      });
+
+      document.querySelector('#btnBlue').addEventListener('click', () => {
+        product.setAttribute('src', '#modelBlue');
+      });
+
+      document.querySelector('#btnBlack').addEventListener('click', () => {
+        product.setAttribute('src', '#modelBlack');
+      });
+
+      // === OPTION 2 LOGIC (Gamified Reward) ===
+
+      // Listen for a click on the 3D model itself
+      product.addEventListener('click', () => {
+
+        // 1. Play a "win" animation (we'll re-use the spin)
+        product.setAttribute('animation', {
+          property: 'rotation',
+          to: '0 360 0',
+          dur: 1000,
+          easing: 'easeInOutSine'
+        });
+
+        // 2. Hide the product and the UI buttons
+        product.setAttribute('visible', 'false');
+        document.querySelector('.controls').style.display = 'none';
+
+        // 3. Show the voucher and redeem button
+        voucher.setAttribute('visible', 'true');
+        redeemBtn.setAttribute('visible', 'true');
+      });
+
+      // Optional: Reset rotation after spin
+      product.addEventListener('animationcomplete', () => {
+        product.setAttribute('rotation', '0 0 0');
+      });
+
+    });
+  </script>
 </body>
 
 </html>
