@@ -9,6 +9,11 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
     .controls {
       position: absolute;
       bottom: 25px;
@@ -16,32 +21,70 @@
       transform: translateX(-50%);
       z-index: 10;
       display: flex;
+      background: rgba(40, 40, 40, 0.8);
+      border-radius: 15px;
+      padding: 10px;
     }
 
     .controls button {
-      font-size: 14px;
-      padding: 10px 15px;
-      margin: 0 5px;
+      background: none;
       border: none;
-      border-radius: 5px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      font-weight: bold;
+      padding: 0;
+      margin: 0 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+      position: relative;
+    }
+
+    .color-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      transition: border-color 0.2s ease-in-out;
+    }
+
+    #btnBlue .color-circle {
+      background-color: #4285F4;
+    }
+
+    #btnRed .color-circle {
+      background-color: #EA4335;
+    }
+
+    #btnBlack .color-circle {
+      background-color: #000000;
+    }
+
+    .controls button.active .color-circle {
+      border-color: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
     }
   </style>
 </head>
 
 <body>
   <div class="controls">
-    <button id="btnRed">Red</button>
-    <button id="btnBlue">Blue</button>
-    <button id="btnBlack">Black</button>
+    <button id="btnBlue" class="active">
+      <span class="color-circle"></span>
+    </button>
+    <button id="btnRed">
+      <span class="color-circle"></span>
+    </button>
+    <button id="btnBlack">
+      <span class="color-circle"></span>
+    </button>
   </div>
 
   <a-assets>
     <a-asset-item id="modelRed" src="./Red_Shoes.glb"></a-asset-item>
     <a-asset-item id="modelBlue" src="./BlueShoes.glb"></a-asset-item>
     <a-asset-item id="modelBlack" src="./Black_Shoes.glb"></a-asset-item>
+    
+    <a-asset-item id="voucherImg" src="./voucher.png"></a-asset-item>
   </a-assets>
 
   <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; maxTrack: 1;" color-space="sRGB"
@@ -56,49 +99,108 @@
 
       <a-gltf-model id="productModelRed" src="#modelRed" 
         position="0 0.2 0" scale="0.08 0.08 0.08" rotation="0 0 0" 
-        visible="true">
+        visible="false" 
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear">
       </a-gltf-model>
       
       <a-gltf-model id="productModelBlue" src="#modelBlue" 
         position="0 0.2 0" scale="0.08 0.08 0.08" rotation="0 0 0" 
-        visible="false">
+        visible="true" 
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear">
       </a-gltf-model>
       
       <a-gltf-model id="productModelBlack" src="#modelBlack" 
         position="0 0.2 0" scale="0.08 0.08 0.08" rotation="0 0 0" 
-        visible="false">
+        visible="false" 
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear">
       </a-gltf-model>
+
+      <a-image id="voucher" src="#voucherImg" 
+        position="0 0.2 0" scale="0.2 0.2 0.2" 
+        visible="false">
+      </a-image>
+
+      <a-link id="redeemBtn" href="https://www.senijaya.com" 
+        title="Redeem Now!" position="0 0.0 0"
+        scale="0.15 0.15 0.15" visual-aspect-ratio="3.5" 
+        background-color="#28a745" text-color="#FFF" 
+        visible="false">
+      </a-link>
 
     </a-entity>
   </a-scene>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-
-      // Get references to all three models
+      // Get all model elements
       const modelRed = document.querySelector('#productModelRed');
       const modelBlue = document.querySelector('#productModelBlue');
       const modelBlack = document.querySelector('#productModelBlack');
 
-      // --- Button Logic ---
+      // Get button elements
+      const btnRed = document.querySelector('#btnRed');
+      const btnBlue = document.querySelector('#btnBlue');
+      const btnBlack = document.querySelector('#btnBlack');
+      const allButtons = [btnRed, btnBlue, btnBlack];
+      
+      // ADDED: Get controls panel and voucher elements
+      const controls = document.querySelector('.controls');
+      const voucher = document.querySelector('#voucher');
+      const redeemBtn = document.querySelector('#redeemBtn');
 
-      document.querySelector('#btnRed').addEventListener('click', () => {
+      // --- Color Swap Logic (Unchanged) ---
+
+      function setActiveButton(activeButton) {
+        allButtons.forEach(button => {
+          button.classList.remove('active');
+        });
+        activeButton.classList.add('active');
+      }
+
+      btnRed.addEventListener('click', () => {
         modelRed.setAttribute('visible', 'true');
         modelBlue.setAttribute('visible', 'false');
         modelBlack.setAttribute('visible', 'false');
+        setActiveButton(btnRed);
       });
 
-      document.querySelector('#btnBlue').addEventListener('click', () => {
+      btnBlue.addEventListener('click', () => {
         modelRed.setAttribute('visible', 'false');
         modelBlue.setAttribute('visible', 'true');
         modelBlack.setAttribute('visible', 'false');
+        setActiveButton(btnBlue);
       });
 
-      document.querySelector('#btnBlack').addEventListener('click', () => {
+      btnBlack.addEventListener('click', () => {
         modelRed.setAttribute('visible', 'false');
         modelBlue.setAttribute('visible', 'false');
         modelBlack.setAttribute('visible', 'true');
+        setActiveButton(btnBlack);
       });
+
+      setActiveButton(btnBlue);
+      
+      // --- ADDED: Click-to-Reward Logic ---
+      
+      // This function will run when any shoe is clicked
+      function onShoeClick() {
+        // 1. Hide all three shoe models
+        modelRed.setAttribute('visible', 'false');
+        modelBlue.setAttribute('visible', 'false');
+        modelBlack.setAttribute('visible', 'false');
+
+        // 2. Hide the color button controls
+        controls.style.display = 'none';
+
+        // 3. Show the voucher and redeem button
+        voucher.setAttribute('visible', 'true');
+        redeemBtn.setAttribute('visible', 'true');
+      }
+
+      // Add the click listener to all three models
+      modelRed.addEventListener('click', onShoeClick);
+      modelBlue.addEventListener('click', onShoeClick);
+      modelBlack.addEventListener('click', onShoeClick);
 
     });
   </script>
