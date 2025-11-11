@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
+    /* Your CSS styles are unchanged */
     body {
       margin: 0;
       overflow: hidden;
@@ -83,7 +84,7 @@
     <a-asset-item id="modelRed" src="./Red_Shoes.glb"></a-asset-item>
     <a-asset-item id="modelBlue" src="./BlueShoes.glb"></a-asset-item>
     <a-asset-item id="modelBlack" src="./Black_Shoes.glb"></a-asset-item>
-    
+
     <a-asset-item id="voucherImg" src="./voucher.png"></a-asset-item>
   </a-assets>
 
@@ -93,7 +94,7 @@
 
     <a-light type="ambient" color="#FFF" intensity="0.5"></a-light>
     <a-light type="directional" color="#FFF" intensity="1" position="1 1 1"></a-light>
-    <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse"></a-camera>
+    <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse; objects: [gltf-model]"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
 
@@ -132,24 +133,23 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Get all model elements
+      // Your existing querySelectors (unchanged)
       const modelRed = document.querySelector('#productModelRed');
       const modelBlue = document.querySelector('#productModelBlue');
       const modelBlack = document.querySelector('#productModelBlack');
 
-      // Get button elements
       const btnRed = document.querySelector('#btnRed');
       const btnBlue = document.querySelector('#btnBlue');
       const btnBlack = document.querySelector('#btnBlack');
       const allButtons = [btnRed, btnBlue, btnBlack];
-      
-      // ADDED: Get controls panel and voucher elements
+
+      // === NEW querySelectors ADDED ===
       const controls = document.querySelector('.controls');
       const voucher = document.querySelector('#voucher');
       const redeemBtn = document.querySelector('#redeemBtn');
 
-      // --- Color Swap Logic (Unchanged) ---
 
+      // Your existing setActiveButton function (unchanged)
       function setActiveButton(activeButton) {
         allButtons.forEach(button => {
           button.classList.remove('active');
@@ -157,6 +157,7 @@
         activeButton.classList.add('active');
       }
 
+      // Your existing button click listeners (unchanged)
       btnRed.addEventListener('click', () => {
         modelRed.setAttribute('visible', 'true');
         modelBlue.setAttribute('visible', 'false');
@@ -178,9 +179,11 @@
         setActiveButton(btnBlack);
       });
 
+      // Your existing initial active button call (unchanged)
       setActiveButton(btnBlue);
-      
-      // --- ADDED: Click-to-Reward Logic ---
+
+
+      // === NEW LOGIC ADDED ===
       
       // This function will run when any shoe is clicked
       function onShoeClick() {
