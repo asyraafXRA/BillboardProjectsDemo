@@ -25,7 +25,6 @@
       border: none;
       border-radius: 5px;
       background: rgba(0, 0, 0, 0.7);
-      /* Semi-transparent */
       color: white;
       font-weight: bold;
     }
@@ -43,7 +42,6 @@
     <a-asset-item id="modelRed" src="./Red_Shoes.glb"></a-asset-item>
     <a-asset-item id="modelBlue" src="./BlueShoes.glb"></a-asset-item>
     <a-asset-item id="modelBlack" src="./Black_Shoes.glb"></a-asset-item>
-    <a-asset-item id="voucherImg" src="./voucher.png"></a-asset-item>
   </a-assets>
 
   <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; maxTrack: 1;" color-space="sRGB"
@@ -52,84 +50,54 @@
 
     <a-light type="ambient" color="#FFF" intensity="0.5"></a-light>
     <a-light type="directional" color="#FFF" intensity="1" position="1 1 1"></a-light>
-
     <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
 
-      <a-gltf-model id="productModel" src="#modelRed" position="0 0.2 0" scale="0.3 0.3 0.3" rotation="0 0 0"
-        
-        animation__float="property: position;
-                          to: 0 0.3 0;
-                          dur: 1500;
-                          easing: easeInOutSine;
-                          loop: true;
-                          dir: alternate">
+      <a-gltf-model id="productModelRed" src="#modelRed" 
+        position="0 0.2 0" scale="0.08 0.08 0.08" rotation="0 0 0" 
+        visible="true">
       </a-gltf-model>
-
-      <a-image id="voucher" src="#voucherImg" position="0 0.5 0" scale="0.8 0.8 0.8" visible="false">
-      </a-image>
-
-      <a-link id="redeemBtn" href="https://www.senijaya.com" title="Redeem Now!" position="0 -0.7 0"
-        scale="0.35 0.35 0.35" visual-aspect-ratio="3.5" background-color="#28a745" text-color="#FFF" visible="false">
-      </a-link>
+      
+      <a-gltf-model id="productModelBlue" src="#modelBlue" 
+        position="0 0.2 0" scale="0.08 0.08 0.08" rotation="0 0 0" 
+        visible="false">
+      </a-gltf-model>
+      
+      <a-gltf-model id="productModelBlack" src="#modelBlack" 
+        position="0 0.2 0" scale="0.08 0.08 0.08" rotation="0 0 0" 
+        visible="false">
+      </a-gltf-model>
 
     </a-entity>
   </a-scene>
 
   <script>
-    // Wait for the document and A-Frame scene to be ready
     document.addEventListener('DOMContentLoaded', () => {
 
-      // Get all your elements
-      const product = document.querySelector('#productModel');
-      const voucher = document.querySelector('#voucher');
-      const redeemBtn = document.querySelector('#redeemBtn');
+      // Get references to all three models
+      const modelRed = document.querySelector('#productModelRed');
+      const modelBlue = document.querySelector('#productModelBlue');
+      const modelBlack = document.querySelector('#productModelBlack');
 
-      // === OPTION 1 LOGIC (Product Explorer) ===
+      // --- Button Logic ---
 
       document.querySelector('#btnRed').addEventListener('click', () => {
-        product.setAttribute('src', '#modelRed');
+        modelRed.setAttribute('visible', 'true');
+        modelBlue.setAttribute('visible', 'false');
+        modelBlack.setAttribute('visible', 'false');
       });
 
       document.querySelector('#btnBlue').addEventListener('click', () => {
-        product.setAttribute('src', '#modelBlue');
+        modelRed.setAttribute('visible', 'false');
+        modelBlue.setAttribute('visible', 'true');
+        modelBlack.setAttribute('visible', 'false');
       });
 
       document.querySelector('#btnBlack').addEventListener('click', () => {
-        product.setAttribute('src', '#modelBlack');
-      });
-
-      // === OPTION 2 LOGIC (Gamified Reward) ===
-
-      // Listen for a click on the 3D model itself
-      product.addEventListener('click', () => {
-
-        // 1. STOP the floating animation so it doesn't conflict
-        product.removeAttribute('animation__float');
-
-        // 2. Play the "win" animation (named animation__spin)
-        product.setAttribute('animation__spin', {
-          property: 'rotation',
-          to: '0 360 0',
-          dur: 1000,
-          easing: 'easeInOutSine'
-        });
-
-        // 3. Hide the UI buttons (this can happen immediately)
-        document.querySelector('.controls').style.display = 'none';
-      });
-
-      // 4. Listen for the SPIN animation to FINISH
-      // We listen for 'animationcomplete__spin'
-      product.addEventListener('animationcomplete__spin', () => {
-
-        // 5. NOW hide the product
-        product.setAttribute('visible', 'false');
-
-        // 6. And show the voucher and redeem button
-        voucher.setAttribute('visible', 'true');
-        redeemBtn.setAttribute('visible', 'true');
+        modelRed.setAttribute('visible', 'false');
+        modelBlue.setAttribute('visible', 'false');
+        modelBlack.setAttribute('visible', 'true');
       });
 
     });
