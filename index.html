@@ -8,10 +8,6 @@
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-</head>
-
-<body>
   <style>
     .controls {
       position: absolute;
@@ -20,7 +16,6 @@
       transform: translateX(-50%);
       z-index: 10;
       display: flex;
-      /* Arrange buttons side-by-side */
     }
 
     .controls button {
@@ -35,7 +30,9 @@
       font-weight: bold;
     }
   </style>
+</head>
 
+<body>
   <div class="controls">
     <button id="btnRed">Red</button>
     <button id="btnBlue">Blue</button>
@@ -61,7 +58,13 @@
     <a-entity mindar-image-target="targetIndex: 0">
 
       <a-gltf-model id="productModel" src="#modelRed" position="0 0.2 0" scale="0.3 0.3 0.3" rotation="0 0 0"
-        animation-mixer="clip: floating">
+        
+        animation__float="property: position;
+                          to: 0 0.3 0;
+                          dur: 1500;
+                          easing: easeInOutSine;
+                          loop: true;
+                          dir: alternate">
       </a-gltf-model>
 
       <a-image id="voucher" src="#voucherImg" position="0 0.5 0" scale="0.8 0.8 0.8" visible="false">
@@ -73,6 +76,7 @@
 
     </a-entity>
   </a-scene>
+
   <script>
     // Wait for the document and A-Frame scene to be ready
     document.addEventListener('DOMContentLoaded', () => {
@@ -101,26 +105,31 @@
       // Listen for a click on the 3D model itself
       product.addEventListener('click', () => {
 
-        // 1. Play a "win" animation (we'll re-use the spin)
-        product.setAttribute('animation', {
+        // 1. STOP the floating animation so it doesn't conflict
+        product.removeAttribute('animation__float');
+
+        // 2. Play the "win" animation (named animation__spin)
+        product.setAttribute('animation__spin', {
           property: 'rotation',
           to: '0 360 0',
           dur: 1000,
           easing: 'easeInOutSine'
         });
 
-        // 2. Hide the product and the UI buttons
-        product.setAttribute('visible', 'false');
+        // 3. Hide the UI buttons (this can happen immediately)
         document.querySelector('.controls').style.display = 'none';
-
-        // 3. Show the voucher and redeem button
-        voucher.setAttribute('visible', 'true');
-        redeemBtn.setAttribute('visible', 'true');
       });
 
-      // Optional: Reset rotation after spin
-      product.addEventListener('animationcomplete', () => {
-        product.setAttribute('rotation', '0 0 0');
+      // 4. Listen for the SPIN animation to FINISH
+      // We listen for 'animationcomplete__spin'
+      product.addEventListener('animationcomplete__spin', () => {
+
+        // 5. NOW hide the product
+        product.setAttribute('visible', 'false');
+
+        // 6. And show the voucher and redeem button
+        voucher.setAttribute('visible', 'true');
+        redeemBtn.setAttribute('visible', 'true');
       });
 
     });
