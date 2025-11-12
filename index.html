@@ -47,6 +47,7 @@
       transition: border-color 0.2s ease-in-out;
     }
 
+    /* Specific colors for the circles */
     #btnBlue .color-circle {
       background-color: #4285F4;
     }
@@ -83,19 +84,15 @@
     <a-asset-item id="modelRed" src="./Red_Shoes.glb"></a-asset-item>
     <a-asset-item id="modelBlue" src="./BlueShoes.glb"></a-asset-item>
     <a-asset-item id="modelBlack" src="./Black_Shoes.glb"></a-asset-item>
-    
-    <a-asset-item id="voucherImg" src="./voucher.png"></a-asset-item>
   </a-assets>
 
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; maxTrack: 1;" color-space="sRGB"
+  <a-scene mindar-image="imageTargetSrc: ./Shoes_Target.mind; autoStart: true; maxTrack: 1;" color-space="sRGB"
     renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
 
     <a-light type="ambient" color="#FFF" intensity="0.5"></a-light>
     <a-light type="directional" color="#FFF" intensity="1" position="1 1 1"></a-light>
-    
-    <a-camera position="0 0 0" look-controls="enabled: false" 
-              cursor="rayOrigin: mouse; objects: .clickable"></a-camera>
+    <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
 
@@ -117,50 +114,20 @@
         animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear">
       </a-gltf-model>
 
-      <a-box
-        id="clickTarget"
-        class="clickable"
-        position="0 0.2 0"
-        scale="3 3 3"
-        material="color: red; opacity: 0.5">
-      </a-box>
-
-      <a-image id="voucher" src="#voucherImg" 
-        position="0 0.2 0" scale="0.2 0.2 0.2" 
-        visible="false">
-      </a-image>
-
-      <a-link id="redeemBtn" href="https://www.senijaya.com" 
-        title="Redeem Now!" position="0 0.0 0"
-        scale="0.15 0.15 0.15" visual-aspect-ratio="3.5" 
-        background-color="#28a745" text-color="#FFF" 
-        visible="false">
-      </a-link>
-
     </a-entity>
   </a-scene>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Get models
       const modelRed = document.querySelector('#productModelRed');
       const modelBlue = document.querySelector('#productModelBlue');
       const modelBlack = document.querySelector('#productModelBlack');
 
-      // Get buttons
       const btnRed = document.querySelector('#btnRed');
       const btnBlue = document.querySelector('#btnBlue');
       const btnBlack = document.querySelector('#btnBlack');
       const allButtons = [btnRed, btnBlue, btnBlack];
 
-      // Get NEW elements
-      const controls = document.querySelector('.controls');
-      const clickTarget = document.querySelector('#clickTarget'); // The hitbox
-      const voucher = document.querySelector('#voucher');
-      const redeemBtn = document.querySelector('#redeemBtn');
-
-
-      // --- Color Swap Logic (Unchanged) ---
       function setActiveButton(activeButton) {
         allButtons.forEach(button => {
           button.classList.remove('active');
@@ -190,30 +157,6 @@
       });
 
       setActiveButton(btnBlue);
-
-      // --- NEW Click-to-Reward Logic ---
-
-      // This function will run when the invisible hitbox is clicked
-      function onShoeClick() {
-        // 1. Hide all three shoe models
-        modelRed.setAttribute('visible', 'false');
-        modelBlue.setAttribute('visible', 'false');
-        modelBlack.setAttribute('visible', 'false');
-
-        // 2. Hide the color button controls
-        controls.style.display = 'none';
-
-        // 3. Hide the invisible hitbox itself
-        clickTarget.setAttribute('visible', 'false');
-
-        // 4. Show the voucher and redeem button
-        voucher.setAttribute('visible', 'true');
-        redeemBtn.setAttribute('visible', 'true');
-      }
-
-      // We add ONE click listener to our invisible hitbox
-      clickTarget.addEventListener('click', onShoeClick);
-      
     });
   </script>
 </body>
