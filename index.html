@@ -23,6 +23,7 @@
       background: rgba(40, 40, 40, 0.8);
       border-radius: 15px;
       padding: 10px;
+      align-items: center; /* Vertically center items */
     }
 
     .controls button {
@@ -46,7 +47,6 @@
       transition: border-color 0.2s ease-in-out;
     }
 
-    /* Specific colors for the circles */
     #btnRed .color-circle {
       background-color: #EA4335;
     }
@@ -63,6 +63,17 @@
       border-color: #FFFFFF;
       box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
     }
+
+    /* === ADDED: Style for the new Voucher Button === */
+    #btnVoucher {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin-left: 15px; /* Add some space */
+      font-size: 14px;
+    }
   </style>
 </head>
 
@@ -77,24 +88,25 @@
     <button id="btnBlack">
       <span class="color-circle"></span>
     </button>
+    
+    <button id="btnVoucher">🎁 Get Voucher</button>
   </div>
-
-  <a-assets>
-    <a-asset-item id="modelRed" src="./Red_Shoes.glb"></a-asset-item>
-    <a-asset-item id="modelBlue" src="./BlueShoes.glb"></a-asset-item>
-    <a-asset-item id="modelBlack" src="./Black_Shoes.glb"></a-asset-item>
-    <a-asset-item id="voucherImg" src="./voucher.png"></a-asset-item>
-  </a-assets>
 
   <a-scene mindar-image="imageTargetSrc: ./Target_Complete.mind; autoStart: true; maxTrack: 1;" color-space="sRGB"
     renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
 
+    <a-assets>
+      <a-asset-item id="modelRed" src="./Red_Shoes.glb"></a-asset-item>
+      <a-asset-item id="modelBlue" src="./BlueShoes.glb"></a-asset-item>
+      <a-asset-item id="modelBlack" src="./Black_Shoes.glb"></a-asset-item>
+      <a-asset-item id="voucherImg" src="./voucher.png"></a-asset-item>
+    </a-assets>
+
     <a-light type="ambient" color="#FFF" intensity="0.5"></a-light>
     <a-light type="directional" color="#FFF" intensity="1" position="1 1 1"></a-light>
     
-    <a-camera position="0 0 0" look-controls="enabled: false" 
-              cursor="rayOrigin: mouse; objects: [clickable]"></a-camera>
+    <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
 
@@ -103,32 +115,21 @@
         visible="true" 
         animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear">
       </a-gltf-model>
-      
       <a-gltf-model id="productModelBlue" src="#modelBlue" 
         position="0 0.2 0" scale="0.08 0.08 0.08" rotation="0 0 0" 
         visible="false" 
         animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear">
       </a-gltf-model>
-      
       <a-gltf-model id="productModelBlack" src="#modelBlack" 
         position="0 0.2 0" scale="0.08 0.08 0.08" rotation="0 0 0" 
         visible="false" 
         animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear">
       </a-gltf-model>
 
-      <a-box
-        id="clickTarget"
-        clickable
-        position="0 0.2 0"
-        scale="0.2 0.2 0.2" 
-        material="transparent: true; opacity: 0">
-      </a-box>
-
       <a-image id="voucher" src="#voucherImg" 
         position="0 0.2 0" scale="0.2 0.2 0.2" 
         visible="false">
       </a-image>
-
       <a-link id="redeemBtn" href="https://www.senijaya.com" 
         title="Redeem Now!" position="0 0.0 0"
         scale="0.15 0.15 0.15" visual-aspect-ratio="3.5" 
@@ -141,77 +142,68 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Get all models
+      // Get all elements
       const modelRed = document.querySelector('#productModelRed');
       const modelBlue = document.querySelector('#productModelBlue');
       const modelBlack = document.querySelector('#productModelBlack');
-
-      // Get all buttons
       const btnRed = document.querySelector('#btnRed');
       const btnBlue = document.querySelector('#btnBlue');
       const btnBlack = document.querySelector('#btnBlack');
       const allButtons = [btnRed, btnBlue, btnBlack];
-
-      // Get all reward/control elements
       const controls = document.querySelector('.controls');
-      const clickTarget = document.querySelector('#clickTarget'); // The hitbox
       const voucher = document.querySelector('#voucher');
       const redeemBtn = document.querySelector('#redeemBtn');
-
-
-      // --- 1. Color Swap Logic ---
+      
+      // === ADDED: Get the new voucher button ===
+      const btnVoucher = document.querySelector('#btnVoucher');
+      
+      // --- 1. Color Swap Logic (Unchanged) ---
       function setActiveButton(activeButton) {
         allButtons.forEach(button => {
           button.classList.remove('active');
         });
         activeButton.classList.add('active');
       }
-
       btnRed.addEventListener('click', () => {
         modelRed.setAttribute('visible', 'true');
         modelBlue.setAttribute('visible', 'false');
         modelBlack.setAttribute('visible', 'false');
         setActiveButton(btnRed);
       });
-
       btnBlue.addEventListener('click', () => {
         modelRed.setAttribute('visible', 'false');
         modelBlue.setAttribute('visible', 'true');
         modelBlack.setAttribute('visible', 'false');
         setActiveButton(btnBlue);
       });
-
       btnBlack.addEventListener('click', () => {
         modelRed.setAttribute('visible', 'false');
         modelBlue.setAttribute('visible', 'false');
         modelBlack.setAttribute('visible', 'true');
         setActiveButton(btnBlack);
       });
-
-      // Set default active button on load
       setActiveButton(btnRed);
 
-      // --- 2. Click-to-Reward Logic ---
+      // --- 2. Click-to-Reward Logic (NEW, SIMPLE METHOD) ---
       
-      function onShoeClick() {
-        // Hide all models
+      function showVoucher() {
+        console.log("Voucher button clicked!"); // Debug
+        
+        // 1. Hide all models
         modelRed.setAttribute('visible', 'false');
         modelBlue.setAttribute('visible', 'false');
         modelBlack.setAttribute('visible', 'false');
-
-        // Hide the color buttons
+        
+        // 2. Hide the entire controls panel
         controls.style.display = 'none';
 
-        // Hide the hitbox
-        clickTarget.setAttribute('visible', 'false');
-
-        // Show the voucher
+        // 3. Show voucher and redeem button
         voucher.setAttribute('visible', 'true');
         redeemBtn.setAttribute('visible', 'true');
       }
 
-      // Add the single click listener to the invisible hitbox
-      clickTarget.addEventListener('click', onShoeClick);
+      // Add the simple, reliable click listener
+      btnVoucher.addEventListener('click', showVoucher);
       
     });
   </script>
